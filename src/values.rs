@@ -2,6 +2,9 @@ use core::fmt::Display;
 use core::marker::PhantomData;
 use core::ops as arith;
 
+use alloc::format;
+use alloc::string::{String, ToString};
+
 use crate::name::NamedUnit;
 use crate::ops::{Div, Mul};
 use crate::units::Unit;
