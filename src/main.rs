@@ -1,13 +1,14 @@
-use units::unit_generic;
+use units::{unit, value};
 
-unit_generic!(Joule, "Joule", "J");
-unit_generic!(Mole, "Mole", "mol");
+unit!(Joule, "Joule", "J");
+unit!(Mole, "Mole", "mol");
 
 fn main() {
-    let energy = Joule(100.0);
-    let moles = Mole(0.1);
+    let energy = value!(100.0f64, Joule);
+    let amount = value!(0.1f64, Mole);
+    let energy_per_amount = energy / amount;
 
-    let energy_per_mole = energy / moles;
-
-    println!("{}", energy_per_mole.to_string());
+    println!("{}", energy.to_string());
+    println!("{}", amount.to_string());
+    println!("{}", energy_per_amount.to_string());
 }

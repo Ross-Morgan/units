@@ -1,6 +1,5 @@
-pub trait Unit<T> {
-    type Mul<R: Unit<T>>: Unit<T>;
-    type Div<R: Unit<T>>: Unit<T>;
-
-    fn value(&self) -> T;
+pub trait Unit {
+    type Mul<R: Unit>: Unit;
+    type Div<R: Unit>: Unit;
+    type Pow<const P: i32>: Unit;
 }
