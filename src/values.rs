@@ -9,7 +9,6 @@ use crate::name::NamedUnit;
 use crate::ops::{Div, Mul};
 use crate::units::Unit;
 
-
 #[derive(Copy, Clone, Default, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Value<T, U: Unit>(T, PhantomData<U>);
 
@@ -26,7 +25,8 @@ impl<T: Copy, U: Unit> Value<T, U> {
 }
 
 impl<T, U: Unit> arith::Add<Value<T, U>> for Value<T, U>
-where T: arith::Add<T, Output = T>
+where
+    T: arith::Add<T, Output = T>,
 {
     type Output = Value<T, U>;
 
@@ -36,7 +36,8 @@ where T: arith::Add<T, Output = T>
 }
 
 impl<T, U: Unit> arith::Sub<Value<T, U>> for Value<T, U>
-where T: arith::Sub<T, Output = T>
+where
+    T: arith::Sub<T, Output = T>,
 {
     type Output = Value<T, U>;
 
@@ -46,7 +47,8 @@ where T: arith::Sub<T, Output = T>
 }
 
 impl<T, U1: Unit, U2: Unit> arith::Mul<Value<T, U2>> for Value<T, U1>
-where T: arith::Mul<T, Output = T>
+where
+    T: arith::Mul<T, Output = T>,
 {
     type Output = Value<T, Mul<U1, U2>>;
 
@@ -56,7 +58,8 @@ where T: arith::Mul<T, Output = T>
 }
 
 impl<T, U1: Unit, U2: Unit> arith::Div<Value<T, U2>> for Value<T, U1>
-where T: arith::Div<T, Output = T>
+where
+    T: arith::Div<T, Output = T>,
 {
     type Output = Value<T, Div<U1, U2>>;
 

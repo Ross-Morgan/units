@@ -1,6 +1,9 @@
 use alloc::string::String;
 
-use crate::{ops::{Div, Mul}, units::Unit};
+use crate::{
+    ops::{Div, Mul},
+    units::Unit,
+};
 
 pub trait NamedUnit: Unit {
     fn unit_name() -> String;

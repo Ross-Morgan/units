@@ -1,4 +1,6 @@
 #![no_std]
+#![forbid(clippy::all)]
+
 extern crate alloc;
 
 pub mod macros;
