@@ -2,8 +2,11 @@ use core::marker::PhantomData;
 
 use crate::units::Unit;
 
+/// Struct to represent multiplication of units
 pub struct Mul<L: Unit, R: Unit>(PhantomData<(L, R)>);
+/// Struct to represent division of units
 pub struct Div<L: Unit, R: Unit>(PhantomData<(L, R)>);
+/// Struct to represent powers of a unit
 pub struct Pow<U: Unit, const P: i32>(PhantomData<U>);
 
 impl<L: Unit, R: Unit> Unit for Mul<L, R> {

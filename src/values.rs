@@ -9,6 +9,7 @@ use crate::name::NamedUnit;
 use crate::ops::{Div, Mul};
 use crate::units::Unit;
 
+/// A struct containing a value and a
 #[derive(Copy, Clone, Default, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Value<T, U: Unit>(T, PhantomData<U>);
 

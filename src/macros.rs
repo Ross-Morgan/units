@@ -1,3 +1,4 @@
+/// Create a new base unit
 #[macro_export]
 macro_rules! unit {
     ($name:ident, $type_name:expr, $symbol:expr) => {
@@ -22,9 +23,10 @@ macro_rules! unit {
     };
 }
 
+/// Create a value with an associated unit
 #[macro_export]
 macro_rules! value {
-    ($v:expr, $unit:ty) => {
+    ($v:expr; $unit:ty) => {
         $crate::values::Value::<_, $unit>::new($v)
     };
 }
