@@ -1,20 +1,45 @@
+// #![feature(generic_const_exprs)]
+// #![allow(incomplete_features)]
 #![no_std]
-#![forbid(clippy::all)]
+#![warn(clippy::pedantic)]
 
 extern crate alloc;
 
-pub mod macros;
-pub mod name;
-pub mod ops;
-pub mod units;
-pub mod values;
+mod unit;
+mod base {
+    use crate::SI;
+    use typenum::{P1, Z0};
 
-#[inline]
-pub fn unit_symbol<U: name::NamedUnit>(_: &U) -> alloc::string::String {
-    U::symbol()
+    pub type Metre<V> = SI<V, P1, Z0, Z0, Z0, Z0, Z0, Z0>;
+    pub type Kilogram<V> = SI<V, Z0, P1, Z0, Z0, Z0, Z0, Z0>;
+    pub type Second<V> = SI<V, Z0, Z0, P1, Z0, Z0, Z0, Z0>;
+    pub type Ampere<V> = SI<V, Z0, Z0, Z0, P1, Z0, Z0, Z0>;
+    pub type Kelvin<V> = SI<V, Z0, Z0, Z0, Z0, P1, Z0, Z0>;
+    pub type Mole<V> = SI<V, Z0, Z0, Z0, Z0, Z0, P1, Z0>;
+    pub type Candela<V> = SI<V, Z0, Z0, Z0, Z0, Z0, Z0, P1>;
 }
 
-#[inline]
-pub fn unit_name<U: name::NamedUnit>(_: &U) -> alloc::string::String {
-    U::unit_name()
+mod derived {
+    use crate::base::*;
+    use core::ops::{Div, Mul};
+
+    pub type Veloctiy<V> = <Metre<V> as Div<Second<V>>>::Output;
+    pub type Acceleration<V> = <Veloctiy<V> as Div<Second<V>>>::Output;
+
+    use typenum::{N2, P1, Z0};
+
+    pub type Newton<V> = crate::SI<V, P1, P1, N2, Z0, Z0, Z0, Z0>;
+}
+
+pub use unit::{Dimension, SI};
+
+pub use base::{Ampere, Candela, Kelvin, Kilogram, Metre, Mole, Second};
+
+pub fn a() {
+    let mass: Kilogram<i32> = base::Kilogram::new(10);
+    let acceleration = derived::Acceleration::new(5);
+
+    let force_a = mass * acceleration;
+    let force_b = derived::Newton::new(30);
+    let force_c = force_b - force_a;
 }
