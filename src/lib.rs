@@ -20,13 +20,12 @@ mod base {
 }
 
 mod derived {
-    use crate::base::*;
-    use core::ops::{Div, Mul};
-
-    pub type Veloctiy<V> = <Metre<V> as Div<Second<V>>>::Output;
-    pub type Acceleration<V> = <Veloctiy<V> as Div<Second<V>>>::Output;
-
+    use crate::base::{Metre, Second};
+    use core::ops::Div;
     use typenum::{N2, P1, Z0};
+
+    pub type Velocity<V> = <Metre<V> as Div<Second<V>>>::Output;
+    pub type Acceleration<V> = <Velocity<V> as Div<Second<V>>>::Output;
 
     pub type Newton<V> = crate::SI<V, P1, P1, N2, Z0, Z0, Z0, Z0>;
 }
@@ -34,12 +33,17 @@ mod derived {
 pub use unit::{Dimension, SI};
 
 pub use base::{Ampere, Candela, Kelvin, Kilogram, Metre, Mole, Second};
+pub use derived::{Acceleration, Newton, Velocity};
 
-pub fn a() {
+#[test]
+pub fn unit_resolution() {
     let mass: Kilogram<i32> = base::Kilogram::new(10);
     let acceleration = derived::Acceleration::new(5);
 
     let force_a = mass * acceleration;
     let force_b = derived::Newton::new(30);
-    let force_c = force_b - force_a;
+
+    assert_eq!(force_a, force_b);
 }
+
+pub fn same_type<T, const N: usize>(_: [T; N]) {}
