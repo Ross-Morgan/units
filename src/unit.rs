@@ -1,5 +1,5 @@
 use core::{
-    fmt::Display,
+    fmt::{Display, Write},
     ops::{Add, Div, Mul, Sub},
 };
 
@@ -172,16 +172,6 @@ where
     }
 }
 
-pub enum Dimension {
-    Length,
-    Mass,
-    Time,
-    Current,
-    Temperature,
-    Amount,
-    LuminousIntensity,
-}
-
 impl<V, L, M, T, I, O, N, J> From<V> for SI<V, L, M, T, I, O, N, J>
 where
     L: Integer,
@@ -197,9 +187,9 @@ where
     }
 }
 
-impl<V, L, M, T, I, O, N, J> ToString for SI<V, L, M, T, I, O, N, J>
+impl<V, L, M, T, I, O, N, J> Display for SI<V, L, M, T, I, O, N, J>
 where
-    V: ToString,
+    V: Display,
     L: Integer,
     M: Integer,
     T: Integer,
@@ -208,32 +198,94 @@ where
     N: Integer,
     J: Integer,
 {
-    fn to_string(&self) -> alloc::string::String {
-        let mut out = alloc::string::String::new();
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        Display::fmt(&self.0, f)?;
+        f.write_char(' ')?;
 
-        let v = self.0;
+        let exponents = [L::I64, M::I64, T::I64, I::I64, O::I64, N::I64, J::I64];
 
-        let l = L::I8;
-        let 
+        for (idx, &exponent) in exponents.iter().enumerate() {
+            let symbol = Dimension::from_usize(idx).symbol();
 
+            match exponent {
+                ..=0 => (),
+                1 => f.write_str(symbol)?,
+                _ => {
+                    f.write_str(symbol)?;
+                    f.write_str(&to_superscript(exponent))?;
+                }
+            }
+        }
 
+        for (idx, &exponent) in exponents.iter().enumerate() {
+            let symbol = Dimension::from_usize(idx).symbol();
+
+            if exponent.is_negative() {
+                f.write_str(symbol)?;
+                f.write_str(&to_superscript(exponent))?;
+            }
+        }
+
+        Ok(())
     }
 }
 
-fn to_superscript(n: i64) -> String {
-    map_chars(&n.to_string(), |c| match c {
-        '0' => '⁰',
-        '1' => '¹',
-        '2' => '²',
-        '3' => '³',
-        '4' => '⁴',
-        '5' => '⁵',
-        '6' => '⁶',
-        '7' => '⁷',
-        '8' => '⁸',
-        '9' => '⁹',
-        '-' => '⁻',
-        '+' => '⁺',
-        _ => c,
-    })
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum Dimension {
+    Length = 0,
+    Mass = 1,
+    Time = 2,
+    Current = 3,
+    Temperature = 4,
+    Amount = 5,
+    LuminousIntensity = 6,
+}
+
+impl Dimension {
+    #[must_use]
+    pub const fn from_usize(value: usize) -> Self {
+        match value {
+            0 => Self::Length,
+            1 => Self::Mass,
+            2 => Self::Time,
+            3 => Self::Current,
+            4 => Self::Temperature,
+            5 => Self::Amount,
+            6.. => Self::LuminousIntensity,
+        }
+    }
+
+    #[must_use]
+    pub const fn symbol(self) -> &'static str {
+        match self {
+            Self::Length => "m",
+            Self::Mass => "kg",
+            Self::Time => "s",
+            Self::Current => "A",
+            Self::Temperature => "K",
+            Self::Amount => "mol",
+            Self::LuminousIntensity => "cd",
+        }
+    }
+}
+
+fn to_superscript(n: i64) -> alloc::string::String {
+    n.to_string()
+        .chars()
+        .map(|c| match c {
+            '0' => '⁰',
+            '1' => '¹',
+            '2' => '²',
+            '3' => '³',
+            '4' => '⁴',
+            '5' => '⁵',
+            '6' => '⁶',
+            '7' => '⁷',
+            '8' => '⁸',
+            '9' => '⁹',
+            '-' => '⁻',
+            '+' => '⁺',
+            _ => c,
+        })
+        .collect()
 }
