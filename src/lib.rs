@@ -38,7 +38,7 @@ pub use derived::{Acceleration, Newton, Velocity};
 #[test]
 pub fn unit_resolution() {
     let mass: Kilogram<i32> = base::Kilogram::new(10);
-    let acceleration = derived::Acceleration::new(5);
+    let acceleration = derived::Acceleration::new(3);
 
     let force_a = mass * acceleration;
     let force_b = derived::Newton::new(30);
