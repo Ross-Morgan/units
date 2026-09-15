@@ -35,6 +35,11 @@ pub use unit::{Dimension, SI};
 pub use base::{Ampere, Candela, Kelvin, Kilogram, Metre, Mole, Second};
 pub use derived::{Acceleration, Newton, Velocity};
 
+/// Tests `F = m * a`
+///
+/// # Panics
+///
+/// If units fail to resolve, or if values are unequal, this will panic.
 #[test]
 pub fn unit_resolution() {
     let mass: Kilogram<i32> = base::Kilogram::new(10);
